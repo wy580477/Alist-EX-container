@@ -30,6 +30,10 @@
 3. 访问 < ip地址或域名 >:< CADDY_WEB_PORT >/ariang，可以打开 AriaNg 面板，点击 常规设置 > RPC 填入RPC密钥，并检查协议和端口是否与浏览器地址栏显示的相符。
 4. 访问 < ip地址或域名 >:< CADDY_WEB_PORT >/qbitweb，可以打开 qBittorrent WebUI，输入默认用户名 admin 和默认密码 adminadmin 登陆。点击 tools > options，可以更改界面语言。然后点击 Web UI 更改用户名和密码，务必设置为强密码。
 5. 访问 < ip地址或域名 >:< CADDY_WEB_PORT >/qbitvue，可以打开 VueTorrent qBittorrent WebUI。
+6. 设置离线下载：
+   打开 Alist 管理面板，设置 > 其它。
+   填入 Aria2 地址：http://localhost:61601/jsonrpc，和之前设置的 Aria2 密钥。
+   填入 qBittorrent 链接： http://< qbit 用户名>:< qbit 密码 >@localhost:61602/
 
 
 ## 更多用法和注意事项
