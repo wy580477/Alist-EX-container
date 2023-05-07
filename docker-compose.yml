@@ -1,0 +1,34 @@
+version: '3.3'
+services:
+  alist-ex:
+    image: ghcr.io/wy580477/alist-ex-container:latest
+    container_name: alist-ex
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ~/alist:/data
+      # 数据存放目录。将~/alist换成你在host上想指定的目录。
+    environment:
+      CADDY_DOMAIN: ""
+      # 举例："http://example.com" 或 "https://example.com"
+      # 域名设置为有效域名（可以解析到你的host）,并且80/443端口面向公网开放，就可以启用caddy的自动申请证书开启https功能。
+      # 不是一定需要付费购买域名，免费 ddns 服务域名也可以。
+      # 如果在下面CADDY_EMAIL项中设置Cloudflare的DNS API申请证书，则无需占用80/443端口。
+      # 设置为空值，则对外部ip开放http服务。
+      CADDY_EMAIL: internal
+      # 接受证书颁发机构通知邮件的地址，可以填虚假地址。
+      # 可以通过Cloudflare的DNS API申请证书, 变量值需设置为"{\n dns cloudflare your_cloudflare_api_key \n}"。
+      # 默认值internal为使用caddy自签证书。
+      CADDY_WEB_PORT: 8080
+      # 提供Web服务的端口。设置为443端口，会启动caddy自动https功能。
+      ARIA2_TOKEN: "token"
+      # Aria2的RPC密钥, 建议设置为强密码。
+      ARIA2_TRACKER_UPDATE: "enable"
+      # 自动更新 Aria2 traker 列表，设置为 "disable" 则禁用此功能。
+      TZ: Asia/Shanghai
+      # 指定时区。UTC为标准时间。
+
+      # 以下环境变量为在 localhost 接口上占用的端口。除非出现端口冲突，否则保持默认值即可。
+      ALIST_PORT: 61600
+      ARIA2_PORT: 61601
+      QBT_WEBUI_PORT: 61602
