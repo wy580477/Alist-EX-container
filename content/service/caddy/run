@@ -1,0 +1,16 @@
+#!/bin/sh
+
+exec 2>&1
+
+# Configure AriaNG
+sed -i 's|6800|'"${CADDY_WEB_PORT}"'|g' /workdir/ariang/js/aria-ng*.min.js
+
+# Configure Caddyfile
+mkdir -p /data/caddy 2>/dev/null
+
+if [[ ! -f "/data/caddy/Caddyfile" ]]; then
+    cp /workdir/Caddyfile /data/caddy/
+fi
+
+# Run caddy
+exec caddy run --config /data/caddy/Caddyfile --adapter caddyfile

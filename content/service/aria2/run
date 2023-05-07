@@ -1,0 +1,25 @@
+#!/bin/sh
+
+exec 2>&1
+
+# Configure aria2
+mkdir -p /data/aria2 2>/dev/null
+touch /data/aria2/aria2.session
+
+if [ ! -f "/data/aria2/aria2.conf" ]; then
+    cp /workdir/aria2/aria2.conf /data/aria2/aria2.conf
+fi
+
+if [ ! -f "/data/aria2/dht.dat" ]; then
+    cp /workdir/aria2/dht.dat /data/aria2/
+fi
+
+if [ ! -f "/data/aria2/dht6.dat" ]; then
+    cp /workdir/aria2/dht6.dat /data/aria2/
+fi
+
+sh /workdir/aria2/tracker.sh /data/aria2/aria2.conf
+sed -i "s|^rpc-secret=.*|rpc-secret=${ARIA2_TOKEN}|g;s|^rpc-listen-port=.*|rpc-listen-port=${ARIA2_PORT}|g" /data/aria2/aria2.conf
+
+# Run aria2
+exec aria2c --conf-path="/data/aria2/aria2.conf"

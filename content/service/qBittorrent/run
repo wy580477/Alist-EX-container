@@ -1,0 +1,13 @@
+#!/bin/sh
+
+exec 2>&1
+
+mkdir -p /data/qBittorrent/config 2>/dev/null
+
+if [ ! -f "/data/qBittorrent/config/qBittorrent.conf" ]; then
+    cp /workdir/qbit.conf /data/qBittorrent/config/qBittorrent.conf
+fi
+
+export QBT_PROFILE=/data
+
+exec qbittorrent-nox

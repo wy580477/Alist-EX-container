@@ -1,0 +1,47 @@
+# Created by wy580477 for customized container <https://github.com/wy580477>
+{
+	admin off
+	storage file_system /data/caddy
+}
+{$CADDY_DOMAIN}:{$CADDY_WEB_PORT} {
+	tls {$CADDY_EMAIL}
+	encode gzip
+	# Configure AriaNg
+	handle /ariang* {
+		redir /ariang /ariang/
+		uri strip_prefix /ariang
+		root * /workdir/ariang
+		file_server
+	}
+	# Configure Aria2 RPC
+	handle /jsonrpc {
+		reverse_proxy /jsonrpc localhost:{$ARIA2_PORT}
+	}
+	handle /rpc {
+		reverse_proxy /rpc localhost:{$ARIA2_PORT}
+	}
+	# Configure qbittorrent
+	handle /qbitweb* {
+		redir /qbitweb /qbitweb/
+		uri strip_prefix /qbitweb
+		reverse_proxy * {
+			to localhost:{$QBT_WEBUI_PORT}
+			header_up Host "127.0.0.1:{$QBT_WEBUI_PORT}"
+		}
+	}
+	# Configure Vuetorrent   
+	handle /qbitvue* {
+		redir /qbitvue /qbitvue/
+		uri strip_prefix /qbitvue
+		handle /api* {
+			reverse_proxy * {
+				to localhost:{$QBT_WEBUI_PORT}
+				header_up Host "127.0.0.1:{$QBT_WEBUI_PORT}"
+			}
+		}
+		root * /workdir/vuetorrent/public
+		file_server
+	}
+    # Configure alist
+	reverse_proxy * localhost:{$ALIST_PORT}	
+}
