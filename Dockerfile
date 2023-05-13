@@ -19,6 +19,9 @@ ENV ARIA2_TRACKER_UPDATE=enable
 RUN apk add --no-cache --update curl runit tzdata \
     && wget -O - https://github.com/mayswind/AriaNg/releases/download/1.3.4/AriaNg-1.3.4.zip | busybox unzip -qd /workdir/ariang - \
     && wget -O - https://github.com/WDaan/VueTorrent/releases/latest/download/vuetorrent.zip | busybox unzip -qd /workdir - \
+    && wget -O - https://github.com/bastienwirtz/homer/releases/latest/download/homer.zip | busybox unzip -qd /workdir/homer - \
+    && cp /workdir/homer_conf/* /workdir/homer/assets/tools/ \
+    && cp /workdir/homer_conf/homer.yml /workdir/homer/assets/config.yml \
     && sh /workdir/install.sh \
     && rm /workdir/install.sh \
     && chmod +x /workdir/service/*/run /workdir/service/*/log/run \

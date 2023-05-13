@@ -42,6 +42,13 @@
 		root * /workdir/vuetorrent/public
 		file_server
 	}
-    # Configure alist
+	# Configure homer
+	handle /portalpage* {
+		redir /portalpage /portalpage/
+		uri strip_prefix /portalpage
+		root * /workdir/homer
+		file_server
+	}
+	# Configure alist
 	reverse_proxy * localhost:{$ALIST_PORT}	
 }
