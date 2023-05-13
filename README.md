@@ -1,5 +1,8 @@
 # Alist-EX-container
 
+## [English Version](README_en.md)
+
+
 [概述](#概述)
 
 [部署方式](#部署方式)
@@ -27,10 +30,11 @@
 
 1. 执行 "docker logs alist-ex"，可获取 alist 初始密码。
 2. 访问 < ip地址或域名 >:< CADDY_WEB_PORT > 即可打开 AList。
-3. 访问 < ip地址或域名 >:< CADDY_WEB_PORT >/ariang，可以打开 AriaNg 面板，点击 常规设置 > RPC 填入RPC密钥，并检查协议和端口是否与浏览器地址栏显示的相符。
-4. 访问 < ip地址或域名 >:< CADDY_WEB_PORT >/qbitweb，可以打开 qBittorrent WebUI，输入默认用户名 admin 和默认密码 adminadmin 登陆。点击 tools > options，可以更改界面语言。然后点击 Web UI 更改用户名和密码，务必设置为强密码。
-5. 访问 < ip地址或域名 >:< CADDY_WEB_PORT >/qbitvue，可以打开 VueTorrent qBittorrent WebUI。
-6. 设置离线下载：
+3. 访问 < ip地址或域名 >:< CADDY_WEB_PORT >/portalpage ，可以打开导航页。
+4. 访问 < ip地址或域名 >:< CADDY_WEB_PORT >/ariang ，可以打开 AriaNg 面板，点击 常规设置 > RPC 填入RPC密钥，并检查协议和端口是否与浏览器地址栏显示的相符。
+5. 访问 < ip地址或域名 >:< CADDY_WEB_PORT >/qbitweb ，可以打开 qBittorrent WebUI，输入默认用户名 admin 和默认密码 adminadmin 登陆。点击 tools > options，可以更改界面语言。然后点击 Web UI 更改用户名和密码，务必设置为强密码。
+6. 访问 < ip地址或域名 >:< CADDY_WEB_PORT >/qbitvue ，可以打开 VueTorrent qBittorrent WebUI。
+7. 设置离线下载：
 
    打开 Alist 管理面板，设置 > 其它。
    
