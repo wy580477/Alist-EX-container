@@ -17,7 +17,7 @@ ENV QBT_WEBUI_PORT=61602
 ENV ARIA2_TRACKER_UPDATE=enable
 
 RUN apk add --no-cache --update curl runit tzdata \
-    && wget -O - https://github.com/mayswind/AriaNg/releases/download/1.3.5/AriaNg-1.3.5.zip | busybox unzip -qd /workdir/ariang - \
+    && wget -O - https://github.com/mayswind/AriaNg/releases/download/1.3.6/AriaNg-1.3.6.zip | busybox unzip -qd /workdir/ariang - \
     && wget -O - https://github.com/WDaan/VueTorrent/releases/latest/download/vuetorrent.zip | busybox unzip -qd /workdir - \
     && wget -O - https://github.com/bastienwirtz/homer/releases/latest/download/homer.zip | busybox unzip -qd /workdir/homer - \
     && cp /workdir/homer_conf/* /workdir/homer/assets/tools/ \
