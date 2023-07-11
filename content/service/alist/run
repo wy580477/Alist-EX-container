@@ -3,7 +3,7 @@
 exec 2>&1
 mkdir /data 2>/dev/null
 export ADDR=127.0.0.1
-export PORT=${ALIST_PORT}
+export HTTP_PORT=${ALIST_PORT}
 cd /
 
 exec alist server --no-prefix
