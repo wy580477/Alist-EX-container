@@ -54,6 +54,14 @@ Support AMD64/Arm64/Armv7 architecture.
 
  2. Aria2 settings which changed in AriaNg panel will be reset after Aria2 restarted. You can modify aria2/aria2.conf file in data directory to change Aria2 settings persistently.
 
- 3. Run `docker exec alist-ex alist admin` , you can get alist admin password.
+ 3. Set alist admin password.
+
+ ```
+     # Set random password
+     docker exec alist-ex alist admin random
+
+     # Set admin password as 'NEW_PASSWORD'
+     docker exec alist-ex alist admin set NEW_PASSWORD
+```
 
  4. You can check logs of aria2/qBittorrent/caddy from log dir in container volume.

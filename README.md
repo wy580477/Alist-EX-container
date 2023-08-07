@@ -49,6 +49,14 @@
 
  2. AriaNg 面板更改的 Aria2 设置，在 Aria2 重启后会失效。修改数据目录下 aria2/aria2.conf 文件，可以持久更改 Aria2 设置。
 
- 3. 执行 "docker exec alist-ex alist admin"，可查看 alist 管理员密码。
+ 3. 设置管理员密码: 
+
+```
+     # 随机生成管理员密码
+     docker exec alist-ex alist admin random
+
+     # 手动设置管理员密码,`NEW_PASSWORD`是指你需要设置的密码
+     docker exec alist-ex alist admin set NEW_PASSWORD
+```
 
  4. 在数据目录下 log 目录中，可以查看 aria2/qBittorrent/caddy 的日志。
