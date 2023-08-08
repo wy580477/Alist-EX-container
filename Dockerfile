@@ -1,7 +1,7 @@
 FROM caddy:2.6.4-builder AS builder-caddy
 
 RUN xcaddy build \
-  --with github.com/caddy-dns/cloudflare
+  --with github.com/caddy-dns/cloudflare@a9d3ae2690a1d232bc9f8fc8b15bd4e0a6960eec
 
 
 FROM alpine AS dist
