@@ -8,17 +8,17 @@ QBIT_VERSION="4.5.4.10"
 OS_type="$(uname -m)"
 case "$OS_type" in
 x86_64 | amd64)
-  OS_type='amd64'
+  OS_type='-amd64'
   OS_type2='x86_64-linux-musl_static'
   OS_type3='amd64'
   ;;
 aarch64 | arm64)
-  OS_type='arm64'
+  OS_type='-arm64'
   OS_type2='aarch64-linux-musl_static'
   OS_type3='arm64'
   ;;
 arm*)
-  OS_type='arm'
+  OS_type='eabihf-armv7l'
   OS_type2='arm-linux-musleabi_static'
   OS_type3='armhf'
   ;;
@@ -29,7 +29,7 @@ arm*)
 esac
 
 # Install alist
-wget -O - https://github.com/alist-org/alist/releases/latest/download/alist-linux-musl-${OS_type}.tar.gz | tar -zxf - -C ${DIR_TMP}
+wget -O - https://github.com/alist-org/alist/releases/latest/download/alist-linux-musl${OS_type}.tar.gz | tar -zxf - -C ${DIR_TMP}
 install -m 755 ${DIR_TMP}/alist /usr/bin/
 
 # Install qBit
