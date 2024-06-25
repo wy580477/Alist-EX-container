@@ -2,6 +2,7 @@ version: '3.3'
 services:
   alist-ex:
     image: ghcr.io/wy580477/alist-ex-container:latest
+    # If you need ffmpeg, use this image: ghcr.io/wy580477/alist-ex-container:latest-ffmpeg
     container_name: alist-ex
     network_mode: host
     restart: unless-stopped
@@ -11,20 +12,22 @@ services:
     environment:
       CADDY_DOMAIN: ""
       # For example: "http://example.com" or "https://example.com"
+      # Leave it blank if you intend to visit via IP address.
       # If value is set to a valid domain name (it can be resolved to your host) and port 80/443 is open to internet, caddy's auto-https function can be enabled.
       # You don't need to buy a domain. Any ddns service domain will work.
       # For advanced users, you can use Cloudflare api in CADDY_EMAIL env for SSL certificate instead of Email address. This way you don't need 80/443 ports.
       # If you set value to blank, http service will open to external IP.
       CADDY_EMAIL: internal
+      # No need to change this value if you don't intent to visit via HTTPS protocol.
       # Email address for receiving notification emails from certification authority, you can use fake address.
       # Set to "{\n dns cloudflare your_cloudflare_api_key \n}", Caddy will use Cloudflare api for SSL certificate.
       # If set to "internal", caddy will use self-signed cert.
       CADDY_WEB_PORT: 8080
-      # Port for web services. You enable auto-https from caddy by setting to 443 port.
+      # Port for web services. You can enable auto-https from caddy by setting to 443 port.
       ARIA2_TOKEN: "token"
       # Aria2 RPC token, recommend strong password.
       ARIA2_TRACKER_UPDATE: "enable"
-      # Auto update Aria2 tracker list, set to "disable" to disable this function.
+      # Auto update Aria2 tracker list on container start, set to "disable" to disable this function.
       TZ: UTC
       # Timezone
 

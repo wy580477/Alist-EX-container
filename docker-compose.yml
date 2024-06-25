@@ -2,6 +2,7 @@ version: '3.3'
 services:
   alist-ex:
     image: ghcr.io/wy580477/alist-ex-container:latest
+    # 如需 ffmpeg, 使用: ghcr.io/wy580477/alist-ex-container:latest-ffmpeg
     container_name: alist-ex
     network_mode: host
     restart: unless-stopped
@@ -11,11 +12,13 @@ services:
     environment:
       CADDY_DOMAIN: ""
       # 举例："http://example.com" 或 "https://example.com"
+      # 如果想直接通过 IP 访问，保留空值。
       # 域名设置为有效域名（可以解析到你的host）,并且80/443端口面向公网开放，就可以启用caddy的自动申请证书开启https功能。
       # 不是一定需要付费购买域名，免费 ddns 服务域名也可以。
       # 如果在下面CADDY_EMAIL项中设置Cloudflare的DNS API申请证书，则无需占用80/443端口。
       # 设置为空值，则对外部ip开放http服务。
       CADDY_EMAIL: internal
+      # 如不使用 HTTPS 协议访问，无需设置。
       # 接受证书颁发机构通知邮件的地址，可以填虚假地址。
       # 可以通过Cloudflare的DNS API申请证书, 变量值需设置为"{\n dns cloudflare your_cloudflare_api_key \n}"。
       # 默认值internal为使用caddy自签证书。
@@ -24,7 +27,7 @@ services:
       ARIA2_TOKEN: "token"
       # Aria2的RPC密钥, 建议设置为强密码。
       ARIA2_TRACKER_UPDATE: "enable"
-      # 自动更新 Aria2 traker 列表，设置为 "disable" 则禁用此功能。
+      # 启动时自动更新 Aria2 traker 列表，设置为 "disable" 则禁用此功能。
       TZ: Asia/Shanghai
       # 指定时区。UTC为标准时间。
 
