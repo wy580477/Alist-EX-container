@@ -1,8 +1,18 @@
-FROM caddy:2.7.4-builder AS builder-caddy
+FROM caddy:2.8.4-builder AS builder-caddy
 
 RUN xcaddy build \
-  --with github.com/caddy-dns/cloudflare@bfe272c8525b6dd8248fcdddb460fd6accfc4e84
+  --with github.com/caddy-dns/cloudflare@d11ac0bfeab7475d8b89e2dc93f8c7a8b8859b8f
 
+
+FROM alpine as builder-alist
+
+WORKDIR /app/
+RUN apk add --no-cache bash curl gcc git go musl-dev
+COPY ./upstream-repo/go.mod ./upstream-repo/go.sum ./
+RUN go mod download
+COPY ./upstream-repo ./
+RUN bash build.sh release docker
+  
 
 FROM alpine AS dist
 
@@ -28,5 +38,6 @@ RUN apk add --no-cache --update curl runit tzdata \
     && ln -s /workdir/service/* /etc/service/
 
 COPY --from=builder-caddy /usr/bin/caddy /usr/bin/caddy
+COPY --from=builder-alist /app/bin/alist /usr/bin/
 
 ENTRYPOINT ["runsvdir","/etc/service"]
