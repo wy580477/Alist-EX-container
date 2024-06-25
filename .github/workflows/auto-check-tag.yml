@@ -16,6 +16,8 @@ env:
 jobs:
   check-tag:
     runs-on: ubuntu-latest
+    outputs:
+        trigger: ${{ steps.if_new_tag.outputs.new_tag }}
     steps:
       - name: Checkout This Repository
         uses: actions/checkout@v4
@@ -46,9 +48,11 @@ jobs:
           echo "last_tag=$LAST_PROCESSED_TAG" >> $GITHUB_ENV
 
       - name: Compare Tags
+        id: if_new_tag
         if: ${{ env.latest_tag != env.last_tag }}
         run: |
           echo "New tag detected: ${latest_tag}"
+          echo "new_tag=true" >> "$GITHUB_OUTPUT"
 
       - name: Save Last Processed Tag
         if: ${{ env.lastest_tag != env.last_tag }}
@@ -65,8 +69,8 @@ jobs:
 
   deploy:
     needs: check-tag
-    if: ${{ env.latest_tag != env.last_tag }}
     runs-on: ubuntu-latest
+    if: needs.check-tag.outputs.trigger == 'true'
     permissions:
         contents: read
         packages: write
