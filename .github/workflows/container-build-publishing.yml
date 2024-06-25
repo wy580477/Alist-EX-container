@@ -30,7 +30,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Pull upstream-repo
+        run: |
+          UPSTREAM_REPO="https://github.com/alist-org/alist.git"
+          UPSTREAM_LATEST_TAG=$(git ls-remote --tags --sort="v:refname" $UPSTREAM_REPO | tail -n 1 | sed 's/.*\///;s/\^.*//')
+          git clone $UPSTREAM_REPO upstream-repo
+          cd upstream-repo
+          git checkout ${UPSTREAM_LATEST_TAG}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@master

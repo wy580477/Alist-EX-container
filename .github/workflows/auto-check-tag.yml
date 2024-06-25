@@ -1,0 +1,57 @@
+name: Check Upstream Tag
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # 每小时检查一次
+  push:
+    branches:
+      - main  # 选择你想要的分支
+
+jobs:
+  check-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout This Repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      
+      - name: Check Latest Tag from Upstream
+        id: check_tag
+        run: |
+          UPSTREAM_REPO="https://github.com/alist-org/alist.git"
+          UPSTREAM_LATEST_TAG=$(git ls-remote --tags --sort="v:refname" $UPSTREAM_REPO | tail -n 1 | sed 's/.*\///;s/\^.*//')
+          echo "Latest upstream tag: $UPSTREAM_LATEST_TAG"
+          echo "latest_tag=$UPSTREAM_LATEST_TAG" >> $GITHUB_ENV
+          
+      - name: Check Last Processed Tag
+        id: check_last_tag
+        run: |
+          if [ -f .last_upstream_tag ]; then
+            LAST_PROCESSED_TAG=$(cat .last_upstream_tag)
+            echo "Last processed tag: $LAST_PROCESSED_TAG"
+          else
+            LAST_PROCESSED_TAG="none"
+            echo "No last processed tag found."
+          fi
+          echo "last_tag=$LAST_PROCESSED_TAG" >> $GITHUB_ENV
+
+      - name: Compare Tags
+        if: ${{ env.latest_tag != env.last_tag }}
+        run: |
+          echo "New tag detected: ${latest_tag}"
+
+      - name: Save Last Processed Tag
+        if: ${{ env.lastest_tag != env.last_tag }}
+        run: echo ${latest_tag} > .last_upstream_tag
+
+      - name: Commit and Push Last Processed Tag
+        if: ${{ env.latest_tag != env.last_tag }}
+        run: |
+          git add .last_upstream_tag
+          git tag -a ${latest_tag} -m '${latest_tag}' 
+          git commit -m "Update last processed upstream tag to ${latest_tag}"
+          git push --tags
