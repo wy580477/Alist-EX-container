@@ -1,0 +1,4 @@
+FROM ghcr.io/wy580477/alist-ex-container:latest
+RUN apk update && \
+    apk add --no-cache ffmpeg \
+    rm -rf /var/cache/apk/*

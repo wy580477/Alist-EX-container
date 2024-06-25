@@ -1,0 +1,155 @@
+name: Check Upstream Tag
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # 每小时检查一次
+  push:
+    branches:
+      - main  # 选择你想要的分支
+
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  check-tag:
+    runs-on: ubuntu-latest
+    outputs:
+        trigger: ${{ steps.if_new_tag.outputs.new_tag }}
+    steps:
+      - name: Checkout This Repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      
+      - name: Check Latest Tag from Upstream
+        id: check_tag
+        run: |
+          UPSTREAM_REPO="https://github.com/alist-org/alist.git"
+          UPSTREAM_LATEST_TAG=$(git ls-remote --tags --sort="v:refname" $UPSTREAM_REPO | tail -n 1 | sed 's/.*\///;s/\^.*//')
+          echo "Latest upstream tag: $UPSTREAM_LATEST_TAG"
+          echo "latest_tag=$UPSTREAM_LATEST_TAG" >> $GITHUB_ENV
+          
+      - name: Check Last Processed Tag
+        id: check_last_tag
+        run: |
+          if [ -f .last_upstream_tag ]; then
+            LAST_PROCESSED_TAG=$(cat .last_upstream_tag)
+            echo "Last processed tag: $LAST_PROCESSED_TAG"
+          else
+            LAST_PROCESSED_TAG="none"
+            echo "No last processed tag found."
+          fi
+          echo "last_tag=$LAST_PROCESSED_TAG" >> $GITHUB_ENV
+
+      - name: Compare Tags
+        id: if_new_tag
+        if: ${{ env.latest_tag != env.last_tag }}
+        run: |
+          echo "New tag detected: ${latest_tag}"
+          echo "new_tag=true" >> "$GITHUB_OUTPUT"
+
+      - name: Save Last Processed Tag
+        if: ${{ env.lastest_tag != env.last_tag }}
+        run: echo ${latest_tag} > .last_upstream_tag
+
+      - name: Commit and Push Last Processed Tag
+        if: ${{ env.latest_tag != env.last_tag }}
+        run: |
+          git add .last_upstream_tag
+          git commit -m "Update last processed upstream tag to ${latest_tag}"
+          git push
+
+  build:
+    needs: check-tag
+    runs-on: ubuntu-latest
+    if: needs.check-tag.outputs.trigger == 'true'
+    permissions:
+        contents: read
+        packages: write
+        # This is used to complete the identity challenge
+        # with sigstore/fulcio when running outside of PRs.
+        id-token: write
+
+    steps:
+      - name: Checkout This Repository
+        uses: actions/checkout@v4
+
+      - name: Pull upstream-repo
+        run: |
+          UPSTREAM_REPO="https://github.com/alist-org/alist.git"
+          UPSTREAM_LATEST_TAG=$(git ls-remote --tags --sort="v:refname" $UPSTREAM_REPO | tail -n 1 | sed 's/.*\///;s/\^.*//')
+          git clone --branch $UPSTREAM_LATEST_TAG --depth 1 $UPSTREAM_REPO upstream-repo
+          echo "latest_tag=${UPSTREAM_LATEST_TAG#v}" >> $GITHUB_ENV
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+        with:
+          platforms: all
+
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Login against a Docker registry except on PR
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Extract metadata (tags, labels) for Docker
+      # https://github.com/docker/metadata-action
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            latest=true
+          tags: |
+            type=raw,value=${{ env.latest_tag }}
+
+      # Build and push Docker image with Buildx (don't push on PR)
+      # https://github.com/docker/build-push-action
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}     
+
+      - name: Docker meta with ffmpeg
+        id: meta-ffmpeg
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            latest=true
+            suffix=-ffmpeg,onlatest=true
+          tags: |
+            type=raw,value=${{ env.latest_tag }}
+
+
+      - name: Build and push with ffmpeg
+        id: docker_build_ffmpeg
+        uses: docker/build-push-action@v5
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: Dockerfile.ffmpeg
+          push: true
+          tags: ${{ steps.meta-ffmpeg.outputs.tags }}
+          labels: ${{ steps.meta-ffmpeg.outputs.labels }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
