@@ -32,7 +32,7 @@
 2. 访问 < ip地址或域名 >:< CADDY_WEB_PORT > 即可打开 AList。
 3. 访问 < ip地址或域名 >:< CADDY_WEB_PORT >/portalpage ，可以打开导航页。
 4. 访问 < ip地址或域名 >:< CADDY_WEB_PORT >/ariang ，可以打开 AriaNg 面板，点击 常规设置 > RPC 填入RPC密钥，并检查协议和端口是否与浏览器地址栏显示的相符。
-5. 访问 < ip地址或域名 >:< CADDY_WEB_PORT >/qbitweb ，可以打开 qBittorrent WebUI，输入默认用户名 admin 和默认密码 adminadmin 登陆。点击 tools > options，可以更改界面语言。然后点击 Web UI 更改用户名和密码，务必设置为强密码。
+5. 访问 < ip地址或域名 >:< CADDY_WEB_PORT >/qbitweb ，可以打开 qBittorrent WebUI。查看数据存放目录下 log/qBittorrent/current 文件，获得临时密码，输入默认用户名 admin 和临时密码登陆。点击 tools > options，可以更改界面语言。然后点击 Web UI 更改用户名和密码，务必设置为强密码。
 6. 访问 < ip地址或域名 >:< CADDY_WEB_PORT >/qbitvue ，可以打开 VueTorrent qBittorrent WebUI。
 7. 设置离线下载：
 

@@ -35,7 +35,7 @@ Support AMD64/Arm64/Armv7 architecture.
 
 4. Visit < ip address or domain name >:< CADDY_WEB_PORT >/ariang , you can open AriaNg panel. Click `AriaNg Settings` > `RPC`, set `RPC Secret Token` and check whether protocol and port are the same with URL in browser address bar.
 
-5. Visit < ip address or domain name >:< CADDY_WEB_PORT >/qbitweb , you can open qBittorrent WebUI. Type default username `admin` and default password `adminadmin` to login. Click `tools` > `options` > `Web UI` to change username and password, recommend strong password. 
+5. Visit < ip address or domain name >:< CADDY_WEB_PORT >/qbitweb , you can open qBittorrent WebUI. Open log/qBittorrent/current file under docker volume diretory to get temporary password, Type default username `admin` and temporary password to login. Click `tools` > `options` > `Web UI` to change username and password, recommend strong password. 
 
 6. Visit < ip address or domain name >:< CADDY_WEB_PORT >/qbitvue , you can open VueTorrent qBittorrent WebUI. 
 
