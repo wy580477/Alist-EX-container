@@ -30,8 +30,7 @@ jobs:
       - name: Check Latest Tag from Upstream
         id: check_tag
         run: |
-          UPSTREAM_REPO="https://github.com/alist-org/alist.git"
-          UPSTREAM_LATEST_TAG=$(git ls-remote --tags --sort="v:refname" $UPSTREAM_REPO | tail -n 1 | sed 's/.*\///;s/\^.*//')
+          UPSTREAM_LATEST_TAG=$(curl --silent "https://api.github.com/repos/alist-org/alist/releases/latest" | jq -r '.tag_name')
           echo "Latest upstream tag: $UPSTREAM_LATEST_TAG"
           echo "latest_tag=$UPSTREAM_LATEST_TAG" >> $GITHUB_ENV
           
@@ -83,7 +82,7 @@ jobs:
       - name: Pull upstream-repo
         run: |
           UPSTREAM_REPO="https://github.com/alist-org/alist.git"
-          UPSTREAM_LATEST_TAG=$(git ls-remote --tags --sort="v:refname" $UPSTREAM_REPO | tail -n 1 | sed 's/.*\///;s/\^.*//')
+          UPSTREAM_LATEST_TAG=$(curl --silent "https://api.github.com/repos/alist-org/alist/releases/latest" | jq -r '.tag_name')
           git clone --branch $UPSTREAM_LATEST_TAG --depth 1 $UPSTREAM_REPO upstream-repo
           echo "latest_tag=${UPSTREAM_LATEST_TAG#v}" >> $GITHUB_ENV
       
